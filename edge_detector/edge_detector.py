@@ -4,8 +4,6 @@ import numpy as np
 from edge_detector.exceptions import InvalidRGBImage
 
 class EdgeDetector:
-    NUM_CHANNELS = 3
-
     @classmethod
     def from_image(cls, image):
         return cls(image)
@@ -15,12 +13,12 @@ class EdgeDetector:
         self.image = image
 
     def __validate_image(self, image):
-        image_validator = ImageValidator()
-        if not image_validator.is_numpy_array(image):
+        image_validator = ImageValidator(image)
+        if not image_validator.is_numpy_array():
             raise InvalidRGBImage
-        if not image_validator.is_rgb(image):
+        if not image_validator.has_one_or_three_channels():
             raise InvalidRGBImage
 
     def detect(self):
-        return self.image
-
+        edges = cv2.Canny(self.image, 100, 200)
+        return edges
